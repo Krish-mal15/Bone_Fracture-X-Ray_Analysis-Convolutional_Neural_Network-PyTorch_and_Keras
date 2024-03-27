@@ -1,6 +1,10 @@
 import torch.nn as nn
 import torch
+import torchvision
 #git
+from timeit import default_timer as timer
+
+from tqdm import tqdm
 
 class_names = ['fractured', 'not fractured']
 
@@ -11,7 +15,7 @@ class FractureModel(nn.Module):
         super().__init__()
 
         # hyperparameters
-        self.conv.block_1 = nn.Sequential(
+        self.conv_block_1 = nn.Sequential(
             nn.Conv2d(in_channels=input_shape,
                       out_channels=hidden_units,
                       kernel_size=3,
@@ -26,7 +30,7 @@ class FractureModel(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2)
         )
-        self.conv_block2 = nn.Sequential(
+        self.conv_block_2 = nn.Sequential(
             nn.Conv2d(in_channels=hidden_units,
                       out_channels=hidden_units,
                       kernel_size=3,
@@ -50,7 +54,7 @@ class FractureModel(nn.Module):
     def forward(self, x):
         x = self.conv_block_1(x)
         print(x.shape)
-        x = self.conv_block2(x)
+        x = self.conv_block_2(x)
         print(x.shape)
         x = self.classifier(x)
 
@@ -58,6 +62,12 @@ class FractureModel(nn.Module):
 
 
 torch.manual_seed(42)
+device = torch.device("cpu")
 model = FractureModel(input_shape=1,
-                      hidden_units=10,
-                      output_shape=len(class_names)).to(torch.device)
+                      hidden_units=2,
+                      output_shape=len(class_names)).to(device)
+
+loss = nn.BCELoss()
+optimizer = torch.optim.SGD(params=model.parameters(),
+                            lr=0.1)
+
