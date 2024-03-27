@@ -27,15 +27,15 @@ def load_image(img_path, show=False):
 if __name__ == "__main__":
 
 
-    # image path
-    img_path = test    # dog
-    #img_path = '/media/data/dogscats/test1/19.jpg'      # cat
+    img_path = test
 
-    # load a single image
+
     new_image = load_image(img_path)
 
     # check prediction
     pred = model.predict(new_image)
 
     print(pred)
+
+    #will return as tensor
 
